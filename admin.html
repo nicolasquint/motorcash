@@ -1,132 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel Admin - MotorsCash</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #fff;
-    }
-    .login, .formulario-carga {
-      max-width: 400px;
-      margin: 0 auto;
-      background: #f4f4f4;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background-color: #d00;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-right: 5px;
-    }
-    button:hover {
-      background-color: #b00;
-    }
-    h2 {
-      text-align: center;
-    }
-    .lista-autos {
-      max-width: 600px;
-      margin: 30px auto 0;
-    }
-    .auto-item {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Admin - MotorsCash</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .login,
+        .formulario-carga {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #d00;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background-color: #b00;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .lista-autos {
+            max-width: 600px;
+            margin: 30px auto 0;
+        }
+
+        .auto-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="login" id="login-box">
-    <h2>Login Admin</h2>
-    <input type="text" id="usuario" placeholder="Usuario">
-    <input type="password" id="clave" placeholder="Contraseña">
-    <button onclick="login()">Ingresar</button>
-  </div>
+    <div class="login" id="login-box">
+        <h2>Login Admin</h2>
+        <input type="text" id="usuario" placeholder="Usuario">
+        <input type="password" id="clave" placeholder="Contraseña">
+        <button onclick="login()">Ingresar</button>
+    </div>
 
-  <div class="formulario-carga" id="formulario" style="display: none;">
-    <h2>Cargar / Editar Auto</h2>
-    <input type="text" id="nombre" placeholder="Nombre del vehículo">
-    <input type="text" id="marca" placeholder="Marca">
-    <input type="text" id="motor" placeholder="Motor">
-    <input type="number" id="año" placeholder="Año">
-    <input type="text" id="color" placeholder="Color">
-    <input type="text" id="valor" placeholder="Valor">
-    <input type="text" id="imagen" placeholder="URL de imagen">
-    <button onclick="guardarAuto()">Guardar</button>
-    <input type="hidden" id="editIndex">
-  </div>
+    <div class="formulario-carga" id="formulario" style="display: none;">
+        <h2>Cargar / Editar Auto</h2>
+        <input type="text" id="nombre" placeholder="Nombre del vehículo">
+        <input type="text" id="marca" placeholder="Marca">
+        <input type="text" id="motor" placeholder="Motor">
+        <input type="number" id="año" placeholder="Año">
+        <input type="text" id="color" placeholder="Color">
+        <input type="text" id="valor" placeholder="Valor">
+        <input type="file" id="imagenArchivo" accept="image/*" onchange="previsualizarImagen()">
+        <img id="preview" src="" alt="Previsualización" style="width: 100%; margin-top: 10px; display: none;">
+        <input type="hidden" id="imagenBase64">
+        <button onclick="guardarAuto()">Guardar</button>
+        <input type="hidden" id="editIndex">
+    </div>
 
-  <div class="lista-autos" id="lista-autos" style="display: none;">
-    <h2>Autos cargados</h2>
-    <div id="autos"></div>
-  </div>
+    <div class="lista-autos" id="lista-autos" style="display: none;">
+        <h2>Autos cargados</h2>
+        <div id="autos"></div>
+    </div>
 
-  <script>
-    function login() {
-      const usuario = document.getElementById('usuario').value;
-      const clave = document.getElementById('clave').value;
-      if (usuario === 'admin' && clave === '1234') {
-        document.getElementById('login-box').style.display = 'none';
-        document.getElementById('formulario').style.display = 'block';
-        document.getElementById('lista-autos').style.display = 'block';
-        mostrarAutos();
-      } else {
-        alert('Usuario o contraseña incorrectos');
-      }
-    }
+    <script>
+        function login() {
+            const usuario = document.getElementById('usuario').value;
+            const clave = document.getElementById('clave').value;
+            if (usuario === 'admin' && clave === '1234') {
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('formulario').style.display = 'block';
+                document.getElementById('lista-autos').style.display = 'block';
+                mostrarAutos();
+            } else {
+                alert('Usuario o contraseña incorrectos');
+            }
+        }
 
-    function guardarAuto() {
-      const auto = {
-        nombre: document.getElementById('nombre').value,
-        marca: document.getElementById('marca').value,
-        motor: document.getElementById('motor').value,
-        año: document.getElementById('año').value,
-        color: document.getElementById('color').value,
-        valor: document.getElementById('valor').value,
-        imagen: document.getElementById('imagen').value
-      };
+        function guardarAuto() {
+            const auto = {
+                nombre: document.getElementById('nombre').value,
+                marca: document.getElementById('marca').value,
+                motor: document.getElementById('motor').value,
+                año: document.getElementById('año').value,
+                color: document.getElementById('color').value,
+                valor: document.getElementById('valor').value,
+                imagen: document.getElementById('imagenBase64').value
+            };
 
-      let autos = JSON.parse(localStorage.getItem('autos')) || [];
-      const editIndex = document.getElementById('editIndex').value;
+            let autos = JSON.parse(localStorage.getItem('autos')) || [];
+            const editIndex = document.getElementById('editIndex').value;
 
-      if (editIndex !== "") {
-        autos[editIndex] = auto;
-        document.getElementById('editIndex').value = "";
-        alert("Auto editado con éxito");
-      } else {
-        autos.push(auto);
-        alert("Auto cargado con éxito");
-      }
+            if (editIndex !== "") {
+                autos[editIndex] = auto;
+                document.getElementById('editIndex').value = "";
+                alert("Auto editado con éxito");
+            } else {
+                autos.push(auto);
+                alert("Auto cargado con éxito");
+            }
 
-      localStorage.setItem('autos', JSON.stringify(autos));
-      limpiarFormulario();
-      mostrarAutos();
-    }
+            localStorage.setItem('autos', JSON.stringify(autos));
+            limpiarFormulario();
+            mostrarAutos();
+        }
 
-    function mostrarAutos() {
-      const autos = JSON.parse(localStorage.getItem('autos')) || [];
-      const contenedor = document.getElementById('autos');
-      contenedor.innerHTML = "";
+        function mostrarAutos() {
+            const autos = JSON.parse(localStorage.getItem('autos')) || [];
+            const contenedor = document.getElementById('autos');
+            contenedor.innerHTML = "";
 
-      autos.forEach((auto, index) => {
-        contenedor.innerHTML += `
+            autos.forEach((auto, index) => {
+                contenedor.innerHTML += `
           <div class="auto-item">
             <strong>${auto.nombre}</strong> - ${auto.valor}<br>
             <small>${auto.marca} | ${auto.motor} | ${auto.año} | ${auto.color}</small><br>
@@ -134,41 +147,57 @@
             <button onclick="eliminarAuto(${index})">🗑️ Eliminar</button>
           </div>
         `;
-      });
-    }
+            });
+        }
 
-    function editarAuto(index) {
-      const autos = JSON.parse(localStorage.getItem('autos')) || [];
-      const auto = autos[index];
-      document.getElementById('nombre').value = auto.nombre;
-      document.getElementById('marca').value = auto.marca;
-      document.getElementById('motor').value = auto.motor;
-      document.getElementById('año').value = auto.año;
-      document.getElementById('color').value = auto.color;
-      document.getElementById('valor').value = auto.valor;
-      document.getElementById('imagen').value = auto.imagen;
-      document.getElementById('editIndex').value = index;
-      window.scrollTo(0, 0);
-    }
+        function editarAuto(index) {
+            const autos = JSON.parse(localStorage.getItem('autos')) || [];
+            const auto = autos[index];
+            document.getElementById('nombre').value = auto.nombre;
+            document.getElementById('marca').value = auto.marca;
+            document.getElementById('motor').value = auto.motor;
+            document.getElementById('año').value = auto.año;
+            document.getElementById('color').value = auto.color;
+            document.getElementById('valor').value = auto.valor;
+            document.getElementById('imagen').value = auto.imagen;
+            document.getElementById('editIndex').value = index;
+            window.scrollTo(0, 0);
+        }
 
-    function eliminarAuto(index) {
-      let autos = JSON.parse(localStorage.getItem('autos')) || [];
-      if (confirm("¿Seguro que querés eliminar este auto?")) {
-        autos.splice(index, 1);
-        localStorage.setItem('autos', JSON.stringify(autos));
-        mostrarAutos();
-      }
-    }
+        function eliminarAuto(index) {
+            let autos = JSON.parse(localStorage.getItem('autos')) || [];
+            if (confirm("¿Seguro que querés eliminar este auto?")) {
+                autos.splice(index, 1);
+                localStorage.setItem('autos', JSON.stringify(autos));
+                mostrarAutos();
+            }
+        }
 
-    function limpiarFormulario() {
-      document.getElementById('nombre').value = "";
-      document.getElementById('marca').value = "";
-      document.getElementById('motor').value = "";
-      document.getElementById('año').value = "";
-      document.getElementById('color').value = "";
-      document.getElementById('valor').value = "";
-      document.getElementById('imagen').value = "";
-    }
-  </script>
+        function limpiarFormulario() {
+            document.getElementById('nombre').value = "";
+            document.getElementById('marca').value = "";
+            document.getElementById('motor').value = "";
+            document.getElementById('año').value = "";
+            document.getElementById('color').value = "";
+            document.getElementById('valor').value = "";
+            document.getElementById('imagen').value = "";
+        }
+        function previsualizarImagen() {
+            const archivo = document.getElementById('imagenArchivo').files[0];
+            const lector = new FileReader();
+
+            lector.onload = function (e) {
+                const imagenBase64 = e.target.result;
+                document.getElementById('preview').src = imagenBase64;
+                document.getElementById('preview').style.display = 'block';
+                document.getElementById('imagenBase64').value = imagenBase64;
+            };
+
+            if (archivo) {
+                lector.readAsDataURL(archivo);
+            }
+        }
+    </script>
 </body>
+
 </html>

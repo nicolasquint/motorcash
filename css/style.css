@@ -117,3 +117,38 @@ footer a {
     text-decoration: none;
     font-weight: bold;
 }
+
+@media screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #buscador {
+        width: 90%;
+        margin-top: 10px;
+    }
+
+    .tarjeta-auto {
+        width: 100%;
+    }
+
+    .login,
+    .formulario-carga,
+    .lista-autos {
+        width: 90%;
+        margin: 10px auto;
+    }
+
+    .logo {
+        width: 200px;
+    }
+
+    .logo-nk {
+        width: 60px;
+    }
+
+    footer {
+        font-size: 14px;
+    }
+}
